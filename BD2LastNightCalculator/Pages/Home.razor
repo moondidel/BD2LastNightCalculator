@@ -75,3 +75,23 @@
 
 
 }
+
+<style>
+    /* 아이템이 이동할 때 0.3초 동안 부드럽게 움직임 */
+    .mud-drop-item {
+        transition: transform 0.3s ease;
+    }
+
+    /* 드래그 중인 아이템 스타일 (살짝 투명하게) */
+    .mud-drop-item-dragging {
+        opacity: 0.5;
+        transform: scale(1.05);
+        z-index: 1000;
+    }
+
+    /* 아이템이 들어갈 자리를 미리 보여주는 가이드 라인 */
+    .mud-dropzone-active {
+        border: 2px dashed #594ae2 !important;
+        background-color: rgba(89, 74, 226, 0.05);
+    }
+</style>
