@@ -1,0 +1,33 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # .NET 10 사용을 위해 수정된 부분
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true # 정식 출시 전 버전(Preview)인 경우 필수!
+
+      - name: Publish
+        run: dotnet publish -c Release -o release
+
+      - name: Change base-tag
+        run: sed -i 's/<base href="\/" \/>/<base href="\/BD2LastNightCalculator\/" \/>/g' release/wwwroot/index.html
+
+      - name: Add .nojekyll
+        run: touch release/wwwroot/.nojekyll
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: release/wwwroot
+          branch: gh-pages
