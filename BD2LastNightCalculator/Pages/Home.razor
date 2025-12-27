@@ -23,7 +23,6 @@
             @* 치명 피해 입력창 *@
             <MudNumericField @bind-Value="context.CritDamage" Label="치피(%)"
                              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mx-2" Style="width: 120px;" />
-
             <MudSpacer />
 
             @* 현재 캐릭터의 간이 점수 계산 (예시: 공격력 * 치피) *@
@@ -56,7 +55,7 @@
         if (insertIndex > _items.Count) insertIndex = _items.Count;
 
         // 4. 새로운 위치에 삽입
-        _items.Insert(insertIndex, dropInfo.Item);
+        _items.Insert(insertIndex-1, dropInfo.Item);
 
         // 5. 중요: UI 강제 갱신 (오류 방지)
         StateHasChanged();
