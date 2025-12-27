@@ -2,24 +2,26 @@
 
 on:
   push:
-    branches: [ main ] # 메인 브랜치에 푸시될 때 실행
+    branches: [ main ]
 
 jobs:
   deploy-to-github-pages:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      # .NET 10 사용을 위해 수정된 부분
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x' # 본인의 .NET 버전 확인
+          dotnet-version: '10.0.x'
+          include-prerelease: true # 정식 출시 전 버전(Preview)인 경우 필수!
 
       - name: Publish
         run: dotnet publish -c Release -o release
 
-      - name: Change base-tag (Optional)
-        # 만약 위에서 index.html을 직접 수정했다면 이 단계는 생략 가능하지만, 안전을 위해 둡니다.
-        run: sed -i 's/<base href="\/" \/>/<base href="\/BD2Calc\/" \/>/g' release/wwwroot/index.html
+      - name: Change base-tag
+        run: sed -i 's/<base href="\/" \/>/<base href="\/BD2LastNightCalculator\/" \/>/g' release/wwwroot/index.html
 
       - name: Add .nojekyll
         run: touch release/wwwroot/.nojekyll
