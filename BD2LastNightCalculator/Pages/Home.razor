@@ -3,7 +3,7 @@
 <MudText Typo="Typo.h4" Class="mb-4">캐릭터 배치 (드래그해서 순서 변경)</MudText>
 
 @* T="CharacterItem"을 명시하여 데이터 타입을 확정합니다 *@
-<MudDropContainer T="CharacterItem" Items="_items" ItemDropped="ItemUpdated" Class="d-flex flex-column">
+<MudDropContainer T="CharacterItem" Items="_items" ItemsSelector="@((item, zone) => item.Identifier == zone)" ItemDropped="ItemUpdated" Class="d-flex flex-column">
     <ChildContent>
         @* Identifier가 드롭존과 일치해야 합니다 *@
         <MudDropZone T="CharacterItem" Identifier="dropzone" Class="mud-alert-info pa-4 rounded-lg" Style="min-height:200px;" />
@@ -57,6 +57,9 @@
         public int Power { get; set; }  // 공격력/마력
         public double CritDamage { get; set; } // 치명 피해 (%)
                                                // 추가하고 싶은 스탯(예: 속성 강화 등)을 여기에 더 넣을 수 있습니다.
+
+        // 이 줄을 추가하세요! (아이템이 'dropzone'이라는 구역에 속해있음을 알려주는 용도)
+        public string Identifier { get; set; } = "dropzone";
     }
 
 
