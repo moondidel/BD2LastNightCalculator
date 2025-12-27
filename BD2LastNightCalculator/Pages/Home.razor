@@ -10,8 +10,26 @@
     </ChildContent>
     <ItemRenderer>
         <MudPaper Class="pa-4 my-2 d-flex align-center" Elevation="2" Style="cursor: grab;">
+            @* 드래그 핸들 아이콘 *@
             <MudIcon Icon="@Icons.Material.Filled.DragIndicator" Class="mr-4" />
-            <MudText>@context.Name (전투력: @context.Power)</MudText>
+
+            @* 캐릭터 이름 (고정폭) *@
+            <MudText Style="width: 120px;" Typo="Typo.body1"><b>@context.Name</b></MudText>
+
+            @* 공격력 입력창 *@
+            <MudNumericField @bind-Value="context.Power" Label="공격력/마력"
+                             Variant="Variant.Outlined" Margin="Margin.Dense" Class="mx-2" Style="width: 150px;" />
+
+            @* 치명 피해 입력창 *@
+            <MudNumericField @bind-Value="context.CritDamage" Label="치피(%)"
+                             Variant="Variant.Outlined" Margin="Margin.Dense" Class="mx-2" Style="width: 120px;" />
+
+            <MudSpacer />
+
+            @* 현재 캐릭터의 간이 점수 계산 (예시: 공격력 * 치피) *@
+            <MudText Typo="Typo.body2" Color="Color.Primary">
+                예상 기여: @(context.Power * (1 + context.CritDamage / 100))
+            </MudText>
         </MudPaper>
     </ItemRenderer>
 </MudDropContainer>
@@ -36,6 +54,10 @@
     public class CharacterItem
     {
         public string Name { get; set; } = "";
-        public int Power { get; set; }
+        public int Power { get; set; }  // 공격력/마력
+        public double CritDamage { get; set; } // 치명 피해 (%)
+                                               // 추가하고 싶은 스탯(예: 속성 강화 등)을 여기에 더 넣을 수 있습니다.
     }
+
+
 }
