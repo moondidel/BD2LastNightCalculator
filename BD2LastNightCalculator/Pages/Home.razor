@@ -1,0 +1,41 @@
+﻿@page "/"
+
+<MudText Typo="Typo.h4" Class="mb-4">캐릭터 배치 (드래그해서 순서 변경)</MudText>
+
+@* T="CharacterItem"을 명시하여 데이터 타입을 확정합니다 *@
+<MudDropContainer T="CharacterItem" Items="_items" ItemDropped="ItemUpdated" Class="d-flex flex-column">
+    <ChildContent>
+        @* Identifier가 드롭존과 일치해야 합니다 *@
+        <MudDropZone T="CharacterItem" Identifier="dropzone" Class="mud-alert-info pa-4 rounded-lg" Style="min-height:200px;" />
+    </ChildContent>
+    <ItemRenderer>
+        <MudPaper Class="pa-4 my-2 d-flex align-center" Elevation="2" Style="cursor: grab;">
+            <MudIcon Icon="@Icons.Material.Filled.DragIndicator" Class="mr-4" />
+            <MudText>@context.Name (전투력: @context.Power)</MudText>
+        </MudPaper>
+    </ItemRenderer>
+</MudDropContainer>
+
+@code {
+    private List<CharacterItem> _items = new()
+    {
+        new CharacterItem { Name = "유스티아", Power = 5500 },
+        new CharacterItem { Name = "세헤라자드", Power = 4800 },
+        new CharacterItem { Name = "라텔", Power = 4200 },
+    };
+
+    private void ItemUpdated(MudItemDropInfo<CharacterItem> dropInfo)
+    {
+        // null 체크를 추가하여 CS8604 경고를 해결합니다.
+        if (dropInfo.Item is null) return;
+
+        _items.Remove(dropInfo.Item);
+        _items.Insert(dropInfo.IndexInZone, dropInfo.Item);
+    }
+
+    public class CharacterItem
+    {
+        public string Name { get; set; } = "";
+        public int Power { get; set; }
+    }
+}

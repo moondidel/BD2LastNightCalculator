@@ -1,0 +1,31 @@
+﻿name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # 메인 브랜치에 푸시될 때 실행
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # 본인의 .NET 버전 확인
+
+      - name: Publish
+        run: dotnet publish -c Release -o release
+
+      - name: Change base-tag (Optional)
+        # 만약 위에서 index.html을 직접 수정했다면 이 단계는 생략 가능하지만, 안전을 위해 둡니다.
+        run: sed -i 's/<base href="\/" \/>/<base href="\/BD2Calc\/" \/>/g' release/wwwroot/index.html
+
+      - name: Add .nojekyll
+        run: touch release/wwwroot/.nojekyll
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: release/wwwroot
+          branch: gh-pages
