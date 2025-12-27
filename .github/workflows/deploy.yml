@@ -1,0 +1,33 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # 안정성을 위해 8.0으로 시도합니다.
+
+      - name: Publish
+        # .csproj 이름을 직접 쓰지 않고 현재 폴더의 모든 프로젝트를 빌드합니다.
+        run: dotnet publish -c Release -o release
+
+      - name: Change base-tag
+        # 리포지토리 이름을 명시적으로 넣어 경로를 강제 지정합니다.
+        run: sed -i 's/<base href="\/" \/>/<base href="\/BD2LastNightCalculator\/" \/>/g' release/wwwroot/index.html
+
+      - name: Add .nojekyll
+        run: touch release/wwwroot/.nojekyll
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: release/wwwroot
+          branch: gh-pages
