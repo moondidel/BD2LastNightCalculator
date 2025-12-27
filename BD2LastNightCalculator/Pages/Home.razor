@@ -44,11 +44,22 @@
 
     private void ItemUpdated(MudItemDropInfo<CharacterItem> dropInfo)
     {
-        // null 체크를 추가하여 CS8604 경고를 해결합니다.
+        // 1. 드롭된 아이템이나 타겟 정보가 없으면 무시
         if (dropInfo.Item is null) return;
 
+        // 2. 리스트에서 아이템 제거
         _items.Remove(dropInfo.Item);
-        _items.Insert(dropInfo.IndexInZone, dropInfo.Item);
+
+        // 3. 새로운 위치 계산 (IndexInZone이 리스트 범위를 벗어나지 않도록 안전하게 처리)
+        var insertIndex = dropInfo.IndexInZone;
+        if (insertIndex < 0) insertIndex = 0;
+        if (insertIndex > _items.Count) insertIndex = _items.Count;
+
+        // 4. 새로운 위치에 삽입
+        _items.Insert(insertIndex, dropInfo.Item);
+
+        // 5. 중요: UI 강제 갱신 (오류 방지)
+        StateHasChanged();
     }
 
     public class CharacterItem
